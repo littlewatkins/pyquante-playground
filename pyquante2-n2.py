@@ -27,7 +27,7 @@ def n2_molecule(r):
 data = pd.DataFrame()
 r_angstroms = np.linspace(0.6, 2.5, 25)
 data['r'] = r_angstroms
-basis_sets = ['sto-3g','6-31g']#, '6-31g**']
+basis_sets = ['sto-3g']#,'6-31g', '6-31g**']
 
 for bs in basis_sets:
     """looping through the different basis sets"""
@@ -59,7 +59,6 @@ for bs in basis_sets:
     data[f'uhf-{bs}'] = uhf_solver_energies
     
 
-#%%
 for bs in data.keys()[1:]:
     plt.plot(data['r'], data[bs], label=bs)
 plt.legend()
