@@ -65,37 +65,39 @@ for bs in basis_sets:
 for bs in basis_sets:
     plt.plot(r_angstrom, potential_energy[bs], '-o', label=bs)
     plt.legend()
-#%%
-potential_energy['sto-3g']
+
 # %%
-r_2 = r_angstrom[5:]
-bs = basis_sets[0]
+r_2 = {basis_sets[0]: r_angstrom[5:], basis_sets[1]: r_angstrom[9:]}
 
-orbitals_2 = [orbitals[bs][5]]
-orbital_energy_2 = [orbital_energy[bs][5]]
-potential_energy_2 = [potential_energy[bs][5]]
+orbitals_2 = {basis_sets[0]: [orbitals[basis_sets[0]][5]], basis_sets[1]: [orbitals[basis_sets[1]][9]]}
+orbital_energy_2 = {basis_sets[0]: [orbital_energy[basis_sets[0]][5]], basis_sets[1]: [orbital_energy[basis_sets[1]][9]]}
+potential_energy_2 = {basis_sets[0]: [potential_energy[basis_sets[0]][5]], basis_sets[1]: [potential_energy[basis_sets[1]][9]]}
 
-for r in r_2[1:]:
-    """looping through the internuclear distance"""
-    print(r)
-    n2 = n2_molecule(r)
-    bfs = basisset(n2,bs)
-    solver = rhf(n2, bfs)
-    solver.converge(iterator=SCFIterator, c=orbitals_2[-1])
-    #solver.converge()
+for bs in basis_sets:
+    print(bs)
+    for r in r_2[bs][1:]:
+        """looping through the internuclear distance"""
+        n2 = n2_molecule(r)
+        bfs = basisset(n2,bs)
+        solver = rhf(n2, bfs)
+        solver.converge(iterator=SCFIterator, c=orbitals_2[bs][-1])
+        #solver.converge()
 
-    orbitals_2.append(solver.orbs)
-    orbital_energy_2.append(solver.orbe)
+        orbitals_2[bs].append(solver.orbs)
+        orbital_energy_2[bs].append(solver.orbe)
 
-    if solver.converged is True:
-        potential_energy_2.append(solver.energy)
-    else:
-        potential_energy_2.append(np.nan)
+        if solver.converged is True:
+            potential_energy_2[bs].append(solver.energy)
+        else:
+            potential_energy_2[bs].append(np.nan)
 # %%
 for bs in basis_sets:
     plt.plot(r_angstrom, potential_energy[bs], '-o', label=bs)
-plt.plot(r_2, potential_energy_2, '-o', label=bs+'_2')
+    plt.plot(r_2[bs], potential_energy_2[bs], '-o', label=bs+' w/ orb')
 plt.legend()
 # %%
 """I think what I really need to do is modify hamiltonian to take in energy and c.
 That way it checks the E - Eold < tol for Eold !=0 like it's hardcoded to start with."""
+
+
+# %%
