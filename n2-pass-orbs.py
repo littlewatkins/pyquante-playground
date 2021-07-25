@@ -26,7 +26,7 @@ def n2_molecule(r):
     return n2
 
 #%%
-data = pd.DataFrame(np.linspace(0.6,2.5,25), columns=['r'])
+r_angstrom = np.linspace(0.6,2.5,25)
 
 basis_sets = ['sto-3g','6-31g']#, '6-31g**']
 
@@ -45,7 +45,7 @@ for bs in basis_sets:
     # I don't think I can pass in the orbital energy 
     potential_energy[bs] = []
     # stores the potential after solving 
-    for r in data['r']:
+    for r in r_angstrom:
         """looping through the internuclear distance"""
         n2 = n2_molecule(r)
         bfs = basisset(n2,bs)
@@ -63,13 +63,12 @@ for bs in basis_sets:
 
 #%%
 for bs in basis_sets:
-    plt.plot(data['r'], potential_energy[bs], '-o', label=bs)
+    plt.plot(r_angstrom, potential_energy[bs], '-o', label=bs)
     plt.legend()
 #%%
 potential_energy['sto-3g']
 # %%
-r_2 = data['r'][5:]
-
+r_2 = r_angstrom[5:]
 bs = basis_sets[0]
 
 orbitals_2 = [orbitals[bs][5]]
@@ -94,7 +93,7 @@ for r in r_2[1:]:
         potential_energy_2.append(np.nan)
 # %%
 for bs in basis_sets:
-    plt.plot(data['r'], potential_energy[bs], '-o', label=bs)
+    plt.plot(r_angstrom, potential_energy[bs], '-o', label=bs)
 plt.plot(r_2, potential_energy_2, '-o', label=bs+'_2')
 plt.legend()
 # %%
