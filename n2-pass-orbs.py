@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from pyquante2.scf.iterators import SCFIterator as SCFIterator
 import matplotlib.pyplot as plt
 
+hartree_to_ev = 27.2114
 #%%
 def n2_molecule(r):
     """creates an N2 molecule using the pyquante.molecule class
@@ -18,12 +19,25 @@ def n2_molecule(r):
     Returns:
         object: n2 molecule with the given internuclear distance
     """
-    n2 = molecule([(7, 0, 0, r/2),
-                (7, 0, 0, -r/2)],
+    n2 = molecule([(7, 0, 0, 0),
+                (7, 0, 0, -r)],
                 units='Angstrom',
                 multiplicity=1,
                 name='Nitrogen')
     return n2
+
+def pec_hartree_to_ev(hartree_array):
+    """takes a potential energy curve in hartrees and converts it to eV
+    with the minimum value in the array being set to zero
+
+    Args:
+        hartree_array (array): potential energy curve in hartree
+
+    Returns:
+        array: potential energy curve in eV
+    """
+    ev_array = (hartree_array - min(hartree_array)) * hartree_to_ev
+    return ev_array
 
 #%%
 r_angstrom = np.linspace(0.6,2.5,25)
@@ -100,4 +114,7 @@ plt.legend()
 That way it checks the E - Eold < tol for Eold !=0 like it's hardcoded to start with."""
 
 
+# %%
+plt.plot(r_angstrom, pec_hartree_to_ev(potential_energy[basis_sets[0]]))
+plt.plot(r_2[basis_sets[0]], pec_hartree_to_ev(potential_energy_2[basis_sets[0]]))
 # %%
